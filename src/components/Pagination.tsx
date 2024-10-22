@@ -33,6 +33,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
   };
 
   const pageNumbers = getPageNumbers();
+  console.log(pageNumbers)
 
   return (
     <nav className="p-6 flex flex-col items-center" aria-label="Pagination">
