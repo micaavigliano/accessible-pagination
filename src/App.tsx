@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useFetch from "./customHook/useFetch";
 import { Asteroid } from "./interface/Asteroid";
 import Pagination from "./components/Pagination";
@@ -16,7 +16,6 @@ interface AsteroidData {
 function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 20;
-  const mainContentRef = useRef<HTMLDivElement | null>(null);
   const { data, loading } = useFetch<AsteroidData>(
     `https://api.nasa.gov/neo/rest/v1/neo/browse?&api_key=${import.meta.env.VITE_NASA_API_KEY}&page=${currentPage}&size=${pageSize}`,
     currentPage - 1,
@@ -29,9 +28,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (mainContentRef.current) {
-      mainContentRef.current.focus();
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage]);
 
   const handlePageChange = (newPage: number) => {
@@ -73,17 +70,9 @@ function App() {
   const dataReduced = reducedData(data!)
 
   return (
-    <div
-      ref={mainContentRef}
-      aria-live="polite" 
-      tabIndex={-1} 
-      role="main"
-    >
+    <main>
       <h1 className="text-3xl font-bold underline">Asteroid app</h1>
-      <section 
-        ref={mainContentRef} 
-        className="min-h-[300px]"
-      >
+      <section className="min-h-[300px]">
         {loading ? (
           <div className="flex justify-center items-center h-full">
             <p className="text-center m-auto" aria-live="assertive" role="status">Loading...</p>
@@ -109,7 +98,7 @@ function App() {
         prevPage={prevPage}
         goToPage={handlePageChange}
       />
-    </div>
+    </main>
   )
 }
 
