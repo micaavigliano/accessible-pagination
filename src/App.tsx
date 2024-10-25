@@ -81,7 +81,7 @@ function App() {
           <div className="grid max-[430px]:grid-cols-1 grid-cols-2 gap-7 place-items-center">
             <p className="sr-only">There are {reducedData.length} items</p>
             {dataReduced.map((asteroid) => (
-              <div key={asteroid.id} className="w-full h-max">
+              <div key={asteroid.id} className="h-full border border-gray-300 rounded-lg p-4">
                 <p><strong>Name: </strong>{asteroid.name}</p>
                 <p><strong>Diameter: </strong>{asteroid.diameter}</p>
                 <p><strong>Last time seen: </strong>{asteroid.lastTimeSeen}</p>

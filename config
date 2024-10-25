@@ -1,0 +1,9 @@
+Host github.com-micaavigliano
+     HostName github.com
+     User git
+     Identityfile ~/.ssh/micaavigliano
+
+Host github.com-hd_mavigliano
+     HostName github.com
+     User git
+     IdentityFile ~/.ssh/hd_mavigliano
