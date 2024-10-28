@@ -84,7 +84,7 @@ function App() {
             {dataReduced.map((asteroid) => (
               <div key={asteroid.id} className="h-full border border-gray-300 rounded-lg p-4">
                 <p><strong>Name: </strong>{asteroid.name}</p>
-                <p><strong>Diameter: </strong>{asteroid.diameter}</p>
+                <p><strong>Diameter: </strong>{asteroid.diameter.toFixed(2)}</p>
                 <p><strong>Last time seen: </strong>{asteroid.lastTimeSeen}</p>
                 <a href={asteroid.link} target="_black" aria-label={`to read more about ${asteroid.name} you can click here`} className="blue-400">Read more</a>
               </div>
