@@ -82,11 +82,11 @@ function App() {
           <div className="grid max-[430px]:grid-cols-1 grid-cols-2 gap-7 place-items-center">
             <p className="sr-only">There are {data?.near_earth_objects.length} items</p>
             {dataReduced.map((asteroid) => (
-              <div key={asteroid.id} className="h-full border border-gray-300 rounded-lg p-4">
+              <div key={asteroid.id} className="h-full border border-gray-300 rounded-lg p-4 w-2/4">
                 <p><strong>Name: </strong>{asteroid.name}</p>
-                <p><strong>Diameter: </strong>{asteroid.diameter.toFixed(2)}</p>
+                <p><strong>Diameter: </strong>{asteroid.diameter.toFixed(2)} meters</p>
                 <p><strong>Last time seen: </strong>{asteroid.lastTimeSeen}</p>
-                <a href={asteroid.link} target="_black" aria-label={`to read more about ${asteroid.name} you can click here`} className="blue-400">Read more</a>
+                <a href={asteroid.link} target="_black" aria-label={`to read more about ${asteroid.name} you can click here`} className="text-blue-400">Read more</a>
               </div>
             ))}
           </div>
