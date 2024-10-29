@@ -66,6 +66,8 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
               className={currentPage === Number(number) ? 'underline underline-offset-3 border-zinc-300' : ''}
               aria-label={`go to page ${number}`}
               aria-current={currentPage === Number(number) && 'page'}
+              aria-setsize={totalPages}
+              aria-posinset={totalPages}
             >
               {number}
             </button>
