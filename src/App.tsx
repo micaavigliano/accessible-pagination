@@ -35,7 +35,7 @@ function App() {
   }, [currentPage, loading]);
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage); 
+    setCurrentPage(newPage);
   };
 
   const nextPage = () => {
@@ -55,7 +55,7 @@ function App() {
       const lastApproach = asteroid.close_approach_data.reduce((latest, current) => {
         return new Date(current.close_approach_date) < new Date() ? current : latest;
       }, asteroid.close_approach_data[0]);
-  
+
       return {
         name: asteroid.name,
         diameter: asteroid.estimated_diameter.meters.estimated_diameter_max,
@@ -73,22 +73,48 @@ function App() {
   return (
     <main>
       <h1 className="text-3xl font-bold underline p-5">Asteroid app</h1>
-      <section className="min-h-[300px]">
+      <section className="min-h-[300px]" aria-label="List of near earth objects">
         {loading ? (
           <div className="flex justify-center items-center h-full" aria-live="polite" role="status">
             <p className="text-center m-auto">Loading...</p>
           </div>
         ) : (
-          <div className="grid max-[430px]:grid-cols-1 grid-cols-2 gap-7 place-items-center">
-            <p className="sr-only">There are {data?.near_earth_objects.length} items</p>
-            {dataReduced.map((asteroid) => (
-              <div key={asteroid.id} className="h-full border border-gray-300 rounded-lg p-4 w-2/4">
-                <p><strong>Name: </strong>{asteroid.name}</p>
-                <p><strong>Diameter: </strong>{asteroid.diameter.toFixed(2)} meters</p>
-                <p><strong>Last time seen: </strong>{asteroid.lastTimeSeen}</p>
-                <a href={asteroid.link} target="_black" aria-label={`to read more about ${asteroid.name} you can click here`} className="text-blue-400">Read more</a>
-              </div>
-            ))}
+          <div
+            className="grid max-[430px]:grid-cols-1 grid-cols-2 gap-7 place-items-center"
+            role="region"
+            aria-label="List of near-Earth objects"
+          >
+            <p className="sr-only">
+              There are {data?.near_earth_objects.length} items
+            </p>
+
+            <ul className="contents">
+              {dataReduced.map((asteroid) => (
+                <li
+                  key={asteroid.id}
+                  className="h-full w-full max-w-sm border border-gray-300 rounded-lg p-4"
+                >
+                  <p>
+                    <strong>Name:</strong> {asteroid.name}
+                  </p>
+                  <p>
+                    <strong>Diameter:</strong> {asteroid.diameter.toFixed(2)} meters
+                  </p>
+                  <p>
+                    <strong>Last time seen:</strong> {asteroid.lastTimeSeen}
+                  </p>
+                  <a
+                    href={asteroid.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`to read more about ${asteroid.name} you can click here`}
+                    className="text-blue-400"
+                  >
+                    Read more
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
         <div aria-live="polite" className="sr-only">
@@ -102,7 +128,7 @@ function App() {
         prevPage={prevPage}
         goToPage={handlePageChange}
       />
-    </main>
+    </main >
   );
 }
 

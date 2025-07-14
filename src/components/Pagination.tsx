@@ -49,15 +49,17 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
           disabled={currentPage === 1}
           aria-label={`go back to the item number ${currentPage - 1}`}
         >
-          <GrFormPrevious className=''/>
+          <GrFormPrevious className='' />
         </button>
         <ol className='flex gap-3'>
           {pageNumbers.map((number) => {
             if (number === 'left-ellipsis' || number === 'right-ellipsis') {
               return (
-                <span key={number} className='relative top-5' aria-label='ellipsis'>
-                  ...
-                </span>
+                <li aria-label="Ellipsis, more pages between" key={number} className='relative top-5'>
+                  <span aria-hidden="true">
+                    ...
+                  </span>
+                </li>
               );
             }
             return (
