@@ -1,50 +1,77 @@
-# React + TypeScript + Vite
+# Accessible Pagination ♿️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight, fully accessible pagination component built with React and TypeScript. Designed with inclusivity in mind, this component offers robust keyboard navigation and screen reader support, making it ideal for WCAG 2.1 AA-compliant web applications.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- ♿️ **Accessibility-first** design (WCAG 2.1 AA)
+- ⌨️ Full **keyboard navigation** (arrow keys, tab, enter)
+- 🧏‍♂️ Screen reader friendly (ARIA labels and roles)
+- ⚛️ React + TypeScript compatible
+- 💡 Lightweight and framework-agnostic
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## 🚀 Live Demo
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+[🔗 View on CodeSandbox](https://accessible-pagination.vercel.app/)
+
+---
+
+## 📦 Installation
+
+```bash
+npm install accessible-pagination
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+---
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## 🧑‍💻 Usage
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```tsx
+import { AccessiblePagination } from "accessible-pagination";
+
+<AccessiblePagination
+  totalPages={10}
+  currentPage={2}
+  onPageChange={(page) => console.log("Selected:", page)}
+/>;
 ```
+
+---
+
+## 🧪 Accessibility
+
+- Follows **WAI-ARIA** practices
+- Uses `aria-label`, `aria-current`, and semantic elements
+- Tested with:
+  - keyboard
+  - ✅ Screen readers (VoiceOver, NVDA)
+
+
+---
+
+## 🔧 Props
+
+| Prop           | Type     | Description                             |
+|----------------|----------|-----------------------------------------|
+| `totalPages`   | `number` | Total number of pages                   |
+| `currentPage`  | `number` | Current active page                     |
+| `onPageChange` | `func`   | Callback function when page changes     |
+
+---
+
+## 🤝 Contributing
+
+Pull requests, feedback, and accessibility suggestions are welcome!  
+Check [open issues](https://github.com/micaavigliano/accessible-pagination/issues) or open a discussion.
+
+---
+
+## 🙋‍♀️ About the Author
+
+Created with ❤️ by [Micaela Avigliano](https://github.com/micaavigliano)  
+Frontend Developer & Accessibility Advocate  
+→ [Portfolio](https://micaavigliano.com)
