@@ -16,7 +16,7 @@ A lightweight, fully accessible pagination component built with React and TypeSc
 
 ## 🚀 Live Demo
 
-[🔗 View on CodeSandbox](https://accessible-pagination.vercel.app/)
+[🔗 Accessible Pagination page](https://accessible-pagination.vercel.app/)
 
 ---
 
