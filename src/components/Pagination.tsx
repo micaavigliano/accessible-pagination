@@ -40,14 +40,14 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
         <button
           onClick={() => goToPage(1)}
           disabled={currentPage === 1}
-          aria-label="Go to the first item"
+        //aria-label="Go to the first item"
         >
           <MdSkipPrevious />
         </button>
         <button
           onClick={prevPage}
           disabled={currentPage === 1}
-          aria-label={`go back to the item number ${currentPage - 1}`}
+        //aria-label={`go back to the item number ${currentPage - 1}`}
         >
           <GrFormPrevious className='' />
         </button>
@@ -67,7 +67,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
                 <button
                   onClick={() => goToPage(Number(number))}
                   className={currentPage === Number(number) ? 'underline underline-offset-3 border-zinc-300' : ''}
-                  aria-label={`go to page ${number}`}
+                  //aria-label={`go to page ${number}`}
                   aria-current={currentPage === Number(number) && 'page'}
                 >
                   {number}
