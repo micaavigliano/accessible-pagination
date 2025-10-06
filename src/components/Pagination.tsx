@@ -42,14 +42,14 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
           disabled={currentPage === 1}
         //aria-label="Go to the first item"
         >
-          <MdSkipPrevious />
+          <MdSkipPrevious aria-hidden="true" />
         </button>
         <button
           onClick={prevPage}
           disabled={currentPage === 1}
         //aria-label={`go back to the item number ${currentPage - 1}`}
         >
-          <GrFormPrevious className='' />
+          <GrFormPrevious aria-hidden="true" />
         </button>
         <ol className='flex gap-3'>
           {pageNumbers.map((number) => {
@@ -81,7 +81,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
           disabled={currentPage >= totalPages}
           aria-label={`go to the item number ${currentPage + 1}`}
         >
-          <MdNavigateNext />
+          <MdNavigateNext aria-hidden="true" />
         </button>
         <button
           onClick={() => goToPage(totalPages)}
@@ -89,7 +89,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
           disabled={currentPage === totalPages}
           aria-label="go to the last item"
         >
-          <MdSkipNext />
+          <MdSkipNext aria-hidden="true" />
         </button>
       </div>
       <p>
