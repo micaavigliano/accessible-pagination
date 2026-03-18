@@ -72,7 +72,7 @@ function App() {
 
   return (
     <main>
-      <h1 className="text-3xl font-bold underline p-5">Asteroid app</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold underline p-4 sm:p-5">Asteroid app</h1>
       <section className="min-h-[300px]" aria-label="List of near earth objects">
         {loading ? (
           <div className="flex justify-center items-center h-full" aria-live="polite" role="status">
@@ -80,7 +80,7 @@ function App() {
           </div>
         ) : (
           <div
-            className="grid max-[430px]:grid-cols-1 grid-cols-2 gap-7 place-items-center"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-7 px-4 sm:px-6 place-items-center"
             role="region"
             aria-label="List of near-Earth objects"
           >
@@ -92,7 +92,7 @@ function App() {
               {dataReduced.map((asteroid) => (
                 <li
                   key={asteroid.id}
-                  className="h-full w-full max-w-sm border border-gray-300 rounded-lg p-4"
+                  className="h-full w-full sm:max-w-sm border border-gray-300 rounded-lg p-3 sm:p-4 text-sm sm:text-base break-words"
                 >
                   <p>
                     <strong>Name:</strong> {asteroid.name}
