@@ -8,9 +8,10 @@ interface PaginationProps {
   nextPage: () => void;
   prevPage: () => void;
   goToPage: (page: number) => void;
+  loading: boolean;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPage, prevPage, goToPage }) => {
+const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPage, prevPage, goToPage, loading }) => {
   const [isSmallViewport, setIsSmallViewport] = React.useState(false);
 
   React.useEffect(() => {
@@ -45,24 +46,28 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
     return pageNumbers.filter(Boolean);
   };
 
+  if (totalPages <= 1) return null;
+
   const pageNumbers = getPageNumbers();
+  const isFirstPage = currentPage === 1;
+  const isLastPage = currentPage >= totalPages;
 
   return (
     <nav className="p-2 sm:p-6 flex flex-col items-center w-full max-w-full overflow-hidden box-border" aria-label="Pagination">
       <div className='flex flex-row flex-nowrap justify-between items-center w-full'>
         <button
           onClick={() => goToPage(1)}
-          disabled={currentPage === 1}
+          disabled={isFirstPage || loading}
           className="min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2"
-          aria-label="Go to the first item"
+          aria-label="Go to first page"
         >
           <MdSkipPrevious aria-hidden="true" className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
         <button
           onClick={prevPage}
-          disabled={currentPage === 1}
+          disabled={isFirstPage || loading}
           className="min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2"
-          aria-label={`go back to the item number ${currentPage - 1}`}
+          aria-label="Go to previous page"
         >
           <GrFormPrevious aria-hidden="true" className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
@@ -70,7 +75,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
           {pageNumbers.map((number) => {
             if (number === 'left-ellipsis' || number === 'right-ellipsis') {
               return (
-                <li aria-label="Ellipsis, more pages between" key={number} className='flex items-center px-1'>
+                <li aria-label="More pages between" key={number} className='flex items-center px-1'>
                   <span aria-hidden="true">
                     ...
                   </span>
@@ -81,9 +86,10 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
               <li aria-setsize={totalPages} aria-posinset={typeof number === 'number' ? number : undefined} key={`page-${number}`}>
                 <button
                   onClick={() => goToPage(Number(number))}
+                  disabled={loading}
                   className={`min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2 text-sm sm:text-base ${currentPage === Number(number) ? 'underline underline-offset-3 border-zinc-300' : ''}`}
-                  aria-label={`go to page ${number}`}
-                  aria-current={currentPage === Number(number) && 'page'}
+                  aria-label={`Go to page ${number}`}
+                  aria-current={currentPage === Number(number) ? 'page' : undefined}
                 >
                   {number}
                 </button>
@@ -93,17 +99,17 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
         </ol>
         <button
           onClick={nextPage}
-          disabled={currentPage >= totalPages}
+          disabled={isLastPage || loading}
           className="min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2"
-          aria-label={`go to the item number ${currentPage + 1}`}
+          aria-label="Go to next page"
         >
           <MdNavigateNext aria-hidden="true" className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
         <button
           onClick={() => goToPage(totalPages)}
           className='min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2 text-neutral-950 dark:text-neutral-300'
-          disabled={currentPage === totalPages}
-          aria-label="go to the last item"
+          disabled={isLastPage || loading}
+          aria-label="Go to last page"
         >
           <MdSkipNext aria-hidden="true" className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>

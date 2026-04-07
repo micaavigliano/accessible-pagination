@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useFetch from "./customHook/useFetch";
 import { Asteroid } from "./interface/Asteroid";
 import Pagination from "./components/Pagination";
@@ -14,7 +14,6 @@ interface AsteroidData {
 
 function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [statusMessage, setStatusMessage] = useState<string>("Loading data...");
   const pageSize = 20;
   const { data, loading } = useFetch<AsteroidData>(
     `https://api.nasa.gov/neo/rest/v1/neo/browse?&api_key=${import.meta.env.VITE_NASA_API_KEY}&page=${currentPage}&size=${pageSize}`,
@@ -23,32 +22,55 @@ function App() {
   );
   const totalPages = data?.page.total_pages || 0;
 
+  const resultsHeadingRef = useRef<HTMLHeadingElement>(null);
+  const isInitialLoad = useRef(true);
+
   useEffect(() => {
     setCurrentPage(1);
   }, []);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (!loading) {
-      setStatusMessage(`Page ${currentPage} loaded. Displaying ${data?.near_earth_objects.length || 0} items.`);
+    if (loading || isInitialLoad.current) {
+      if (!loading) isInitialLoad.current = false;
+      return;
     }
-  }, [currentPage, loading]);
 
-  const handlePageChange = (newPage: number) => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'instant' : 'smooth' });
+
+    // Screen reader: focus hidden heading for page context announcement
+    const heading = resultsHeadingRef.current;
+    if (heading) {
+      heading.textContent = `Page ${currentPage} — Showing ${data?.near_earth_objects.length || 0} items`;
+      heading.focus({ preventScroll: true });
+    }
+
+    // Keyboard: move focus to first interactive element so :focus-visible is visible
+    requestAnimationFrame(() => {
+      const firstInteractive = document.querySelector<HTMLElement>(
+        '[data-results] a, [data-results] button, [data-results] input'
+      );
+      if (firstInteractive) {
+        firstInteractive.focus({ preventScroll: true });
+      }
+    });
+  }, [currentPage, loading, data]);
+
+  const handlePageChange = useCallback((newPage: number) => {
     setCurrentPage(newPage);
-  };
+  }, []);
 
-  const nextPage = () => {
+  const nextPage = useCallback(() => {
     if (currentPage < totalPages) {
       handlePageChange(currentPage + 1);
     }
-  };
+  }, [currentPage, totalPages, handlePageChange]);
 
-  const prevPage = () => {
+  const prevPage = useCallback(() => {
     if (currentPage > 1) {
       handlePageChange(currentPage - 1);
     }
-  };
+  }, [currentPage, handlePageChange]);
 
   const reducedData = (data: AsteroidData) => {
     return data?.near_earth_objects.map((asteroid: Asteroid) => {
@@ -74,6 +96,9 @@ function App() {
     <main>
       <h1 className="text-2xl sm:text-3xl font-bold underline p-4 sm:p-5">Asteroid app</h1>
       <section className="min-h-[300px]" aria-label="List of near earth objects">
+        <h2 ref={resultsHeadingRef} tabIndex={-1} className="sr-only">
+          Near-Earth objects
+        </h2>
         {loading ? (
           <div className="flex justify-center items-center h-full" aria-live="polite" role="status">
             <p className="text-center m-auto">Loading...</p>
@@ -81,45 +106,37 @@ function App() {
         ) : (
           <div
             className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-7 px-4 sm:px-6 place-items-center"
-            role="region"
-            aria-label="List of near-Earth objects"
+            data-results
           >
-            <p className="sr-only">
-              There are {data?.near_earth_objects.length} items
-            </p>
-
             <ul className="contents">
               {dataReduced.map((asteroid) => (
-                <li
-                  key={asteroid.id}
-                  className="h-full w-full sm:max-w-sm border border-gray-300 rounded-lg p-3 sm:p-4 text-sm sm:text-base break-words"
-                >
-                  <p>
-                    <strong>Name:</strong> {asteroid.name}
-                  </p>
-                  <p>
-                    <strong>Diameter:</strong> {asteroid.diameter.toFixed(2)} meters
-                  </p>
-                  <p>
-                    <strong>Last time seen:</strong> {asteroid.lastTimeSeen}
-                  </p>
-                  <a
-                    href={asteroid.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`to read more about ${asteroid.name} you can click here`}
-                    className="text-blue-400"
+                <li key={asteroid.id}>
+                  <article
+                    aria-labelledby={`asteroid-${asteroid.id}`}
+                    className="h-full w-full sm:max-w-sm border border-gray-300 rounded-lg p-3 sm:p-4 text-sm sm:text-base break-words"
                   >
-                    Read more
-                  </a>
+                    <h3 id={`asteroid-${asteroid.id}`}>{asteroid.name}</h3>
+                    <p>
+                      <strong>Diameter:</strong> {asteroid.diameter.toFixed(2)} meters
+                    </p>
+                    <p>
+                      <strong>Last time seen:</strong> {asteroid.lastTimeSeen}
+                    </p>
+                    <a
+                      href={asteroid.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`View NASA details for ${asteroid.name}`}
+                      className="text-blue-400"
+                    >
+                      View NASA details
+                    </a>
+                  </article>
                 </li>
               ))}
             </ul>
           </div>
         )}
-        <div aria-live="polite" className="sr-only">
-          <p>{statusMessage}</p>
-        </div>
       </section>
       <Pagination
         currentPage={currentPage}
@@ -127,6 +144,7 @@ function App() {
         nextPage={nextPage}
         prevPage={prevPage}
         goToPage={handlePageChange}
+        loading={loading}
       />
     </main >
   );
