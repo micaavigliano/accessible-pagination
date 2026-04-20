@@ -1,22 +1,21 @@
 # Accessible Pagination
 
-A lightweight, fully accessible pagination component built with React and TypeScript. Designed with inclusivity in mind, this component offers robust keyboard navigation and screen reader support, making it ideal for WCAG 2.1 AA-compliant web applications.
+A lightweight, fully accessible pagination component built with React and TypeScript. Designed with inclusivity in mind, this component offers robust keyboard navigation and screen reader support, making it ideal for WCAG 2.2 AA-compliant web applications.
 
 ---
 
 ## Features
 
-- ♿️ **Accessibility-first** design (WCAG 2.1 AA)
-- ⌨️ Full **keyboard navigation** (arrow keys, tab, enter)
-- 🧏‍♂️ Screen reader friendly (ARIA labels and roles)
-- ⚛️ React + TypeScript compatible
-- 💡 Lightweight and framework-agnostic
+- **Accessibility-first** design (WCAG 2.2 AA)
+- **keyboard navigation** (arrow keys, tab, enter)
+- Screen reader friendly (ARIA labels and roles)
+- React + TypeScript compatible
 
 ---
 
 ## Live Demo
 
-[🔗 Accessible Pagination page](accessible-pagination.netlify.app/)
+[Accessible Pagination page](accessible-pagination.netlify.app/)
 
 ---
 
@@ -65,5 +64,5 @@ Check [open issues](https://github.com/micaavigliano/accessible-pagination/issue
 ## About the Author
 
 Created with ❤️ by [Micaela Avigliano](https://github.com/micaavigliano)  
-Frontend Developer & Accessibility Advocate  
+Frontend Developer and Accessibility Advocate  
 → [Portfolio](https://micaavigliano.com)
