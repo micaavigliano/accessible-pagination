@@ -9,9 +9,10 @@ interface PaginationProps {
   prevPage: () => void;
   goToPage: (page: number) => void;
   loading: boolean;
+  hrefForPage: (page: number) => string;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPage, prevPage, goToPage, loading }) => {
+const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPage, prevPage, goToPage, loading, hrefForPage }) => {
   const [isSmallViewport, setIsSmallViewport] = React.useState(false);
 
   React.useEffect(() => {
@@ -52,25 +53,42 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage >= totalPages;
 
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    disabled: boolean,
+    action: () => void
+  ) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
+      return;
+    }
+    e.preventDefault();
+    if (disabled) return;
+    action();
+  };
+
+  const disabledClass = 'opacity-50 cursor-not-allowed';
+
   return (
     <nav className="p-2 sm:p-6 flex flex-col items-center w-full max-w-full overflow-hidden box-border" aria-label="Pagination">
       <div className='flex flex-row flex-nowrap justify-between items-center w-full'>
-        <button
-          onClick={() => goToPage(1)}
-          disabled={isFirstPage || loading}
-          className="min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2"
+        <a
+          href={hrefForPage(1)}
+          onClick={(e) => handleLinkClick(e, isFirstPage || loading, () => goToPage(1))}
+          aria-disabled={(isFirstPage || loading) || undefined}
+          className={`min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2 ${(isFirstPage || loading) ? disabledClass : ''}`}
           aria-label="Go to first page"
         >
           <MdSkipPrevious aria-hidden="true" className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
-        <button
-          onClick={prevPage}
-          disabled={isFirstPage || loading}
-          className="min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2"
+        </a>
+        <a
+          href={hrefForPage(Math.max(1, currentPage - 1))}
+          onClick={(e) => handleLinkClick(e, isFirstPage || loading, prevPage)}
+          aria-disabled={(isFirstPage || loading) || undefined}
+          className={`min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2 ${(isFirstPage || loading) ? disabledClass : ''}`}
           aria-label="Go to previous page"
         >
           <GrFormPrevious aria-hidden="true" className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
+        </a>
         <ol className='flex items-center gap-0.5 sm:gap-3'>
           {pageNumbers.map((number) => {
             if (number === 'left-ellipsis' || number === 'right-ellipsis') {
@@ -82,37 +100,42 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, nextPa
                 </li>
               );
             }
+            const pageNum = Number(number);
+            const isCurrent = currentPage === pageNum;
             return (
               <li aria-setsize={totalPages} aria-posinset={typeof number === 'number' ? number : undefined} key={`page-${number}`}>
-                <button
-                  onClick={() => goToPage(Number(number))}
-                  disabled={loading}
-                  className={`min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2 text-sm sm:text-base ${currentPage === Number(number) ? 'underline underline-offset-3 border-zinc-300' : ''}`}
+                <a
+                  href={hrefForPage(pageNum)}
+                  onClick={(e) => handleLinkClick(e, loading, () => goToPage(pageNum))}
+                  aria-disabled={loading || undefined}
+                  className={`min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2 text-sm sm:text-base ${isCurrent ? 'underline underline-offset-3 border-zinc-300' : ''} ${loading ? disabledClass : ''}`}
                   aria-label={`Go to page ${number}`}
-                  aria-current={currentPage === Number(number) ? 'page' : undefined}
+                  aria-current={isCurrent ? 'page' : undefined}
                 >
                   {number}
-                </button>
+                </a>
               </li>
             );
           })}
         </ol>
-        <button
-          onClick={nextPage}
-          disabled={isLastPage || loading}
-          className="min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2"
+        <a
+          href={hrefForPage(Math.min(totalPages, currentPage + 1))}
+          onClick={(e) => handleLinkClick(e, isLastPage || loading, nextPage)}
+          aria-disabled={(isLastPage || loading) || undefined}
+          className={`min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2 ${(isLastPage || loading) ? disabledClass : ''}`}
           aria-label="Go to next page"
         >
           <MdNavigateNext aria-hidden="true" className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
-        <button
-          onClick={() => goToPage(totalPages)}
-          className='min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2 text-neutral-950 dark:text-neutral-300'
-          disabled={isLastPage || loading}
+        </a>
+        <a
+          href={hrefForPage(totalPages)}
+          onClick={(e) => handleLinkClick(e, isLastPage || loading, () => goToPage(totalPages))}
+          aria-disabled={(isLastPage || loading) || undefined}
+          className={`min-w-[32px] min-h-[44px] sm:min-w-[44px] flex items-center justify-center p-0.5 sm:p-2 text-neutral-950 dark:text-neutral-300 ${(isLastPage || loading) ? disabledClass : ''}`}
           aria-label="Go to last page"
         >
           <MdSkipNext aria-hidden="true" className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
+        </a>
       </div>
       <p className="text-sm sm:text-base mt-2">
         Page {currentPage} of {totalPages}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useFetch from "./customHook/useFetch";
 import { Asteroid } from "./interface/Asteroid";
 import Pagination from "./components/Pagination";
@@ -12,8 +12,25 @@ interface AsteroidData {
   };
 }[]
 
+const readPageFromUrl = (): number => {
+  const params = new URLSearchParams(window.location.search);
+  const parsed = parseInt(params.get('page') ?? '1', 10);
+  return Number.isFinite(parsed) && parsed >= 1 ? parsed : 1;
+};
+
+const buildPageUrl = (page: number): string => {
+  const params = new URLSearchParams(window.location.search);
+  if (page <= 1) {
+    params.delete('page');
+  } else {
+    params.set('page', String(page));
+  }
+  const query = params.toString();
+  return `${window.location.pathname}${query ? '?' + query : ''}`;
+};
+
 function App() {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(() => readPageFromUrl());
   const pageSize = 20;
   const { data, loading } = useFetch<AsteroidData>(
     `https://api.nasa.gov/neo/rest/v1/neo/browse?&api_key=${import.meta.env.VITE_NASA_API_KEY}&page=${currentPage}&size=${pageSize}`,
@@ -26,8 +43,19 @@ function App() {
   const isInitialLoad = useRef(true);
 
   useEffect(() => {
-    setCurrentPage(1);
+    const onPopState = () => {
+      setCurrentPage(readPageFromUrl());
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
+
+  useEffect(() => {
+    const desired = buildPageUrl(currentPage);
+    if (window.location.pathname + window.location.search !== desired) {
+      window.history.pushState(null, '', desired);
+    }
+  }, [currentPage]);
 
   useEffect(() => {
     if (loading || isInitialLoad.current) {
@@ -56,21 +84,21 @@ function App() {
     });
   }, [currentPage, loading, data]);
 
-  const handlePageChange = useCallback((newPage: number) => {
+  const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-  }, []);
+  };
 
-  const nextPage = useCallback(() => {
+  const nextPage = () => {
     if (currentPage < totalPages) {
       handlePageChange(currentPage + 1);
     }
-  }, [currentPage, totalPages, handlePageChange]);
+  };
 
-  const prevPage = useCallback(() => {
+  const prevPage = () => {
     if (currentPage > 1) {
       handlePageChange(currentPage - 1);
     }
-  }, [currentPage, handlePageChange]);
+  };
 
   const reducedData = (data: AsteroidData) => {
     return data?.near_earth_objects.map((asteroid: Asteroid) => {
@@ -145,6 +173,7 @@ function App() {
         prevPage={prevPage}
         goToPage={handlePageChange}
         loading={loading}
+        hrefForPage={buildPageUrl}
       />
     </main >
   );
